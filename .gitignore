@@ -1,0 +1,16 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/BLAExercise.API/obj
+/.vs/BLAExercise/DesignTimeBuild
+/.vs/BLAExercise/FileContentIndex
+/.vs/BLAExercise/v17
+/.vs
+/BLAExercise.Core/obj
+/BLAExercise.Data/obj
+/BLAExercise.Tests/bin/Debug/net9.0
+/BLAExercise.Tests/obj
+/BLAExercise.API/bin/Debug/net9.0
+/BLAExercise.Core/bin/Debug/net9.0
+/BLAExercise.Data/bin/Debug/net9.0
