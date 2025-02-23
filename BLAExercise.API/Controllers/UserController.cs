@@ -32,7 +32,7 @@ public class UserController : ControllerBase
 
         var user = await _userRepository.GetAsync(getQueryParameters);
 
-        return Ok(user.Select(_mapper.Map<User>));
+        return Ok(user.Select(_mapper.Map<UserDto>));
     }
 
     [HttpGet]
