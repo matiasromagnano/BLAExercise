@@ -1,4 +1,4 @@
-﻿namespace BLAExercise.Core.Models;
+﻿namespace BLAExercise.API.Models;
 
 public class SneakerDto
 {

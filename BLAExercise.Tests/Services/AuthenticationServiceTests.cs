@@ -1,5 +1,4 @@
 ﻿using BLAExercise.Core.Configuration;
-using BLAExercise.Core.Models;
 using BLAExercise.Core.Services;
 using BLAExercise.Data.Interfaces;
 using BLAExercise.Tests.Helpers;
@@ -18,6 +17,11 @@ public class AuthenticationServiceTests
     {
         _userRepositoryMock = new Mock<IUserRepository>();
         _optionsMock = new Mock<IOptions<ApplicationOptions>>();
+        _optionsMock.Setup(x => x.Value).Returns(
+            new ApplicationOptions
+            {
+                JWTSecretKey = "7A2E7Fd7a6F8B11D226EDbfc137A628CC83B76a2A13C62B7bEaEb589D2614E74A68d23E349Cb4B6E2dABDAB475451EDC964DCfF3763E424487B8A6A2246B9B9C"
+            });
         _authService = new AuthenticationService(_userRepositoryMock.Object, _optionsMock.Object);
     }
 
@@ -26,12 +30,11 @@ public class AuthenticationServiceTests
     {
         // Arrange
         var user = CustomFaker.User;
-        var userLoginDto = new UserLoginDto { Email = user.Email, Password = user.Password };
-        _userRepositoryMock.Setup(repo => repo.GetUserByEmailAsync(userLoginDto.Email!))
+        _userRepositoryMock.Setup(repo => repo.GetUserByEmailAsync(user.Email!))
             .ReturnsAsync(user);
 
         // Act
-        var result = await _authService.AuthenticateUser(userLoginDto);
+        var result = await _authService.AuthenticateUser(user);
 
         // Assert
         Assert.True(result);
@@ -42,12 +45,11 @@ public class AuthenticationServiceTests
     {
         // Arrange
         var user = CustomFaker.User;
-        var userLoginDto = new UserLoginDto { Email = user.Email, Password = user.Password };
-        _userRepositoryMock.Setup(repo => repo.GetUserByEmailAsync(userLoginDto.Email!))
+        _userRepositoryMock.Setup(repo => repo.GetUserByEmailAsync(user.Email!))
             .ReturnsAsync(user);
 
         // Act
-        var token = await _authService.GenerateToken(userLoginDto);
+        var token = await _authService.GenerateToken(user);
 
         // Assert
         Assert.NotEmpty(token);

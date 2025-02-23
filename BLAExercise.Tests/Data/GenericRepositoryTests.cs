@@ -1,85 +1,113 @@
-﻿using BLAExercise.Data.Models;
+﻿using Azure.Identity;
+using BLAExercise.Data.Database;
+using BLAExercise.Data.Models;
 using BLAExercise.Data.Repositories;
 using BLAExercise.Tests.Helpers;
 
 namespace BLAExercise.Tests.Data;
 
+/// <summary>
+/// Integration tests
+/// </summary>
 public class GenericRepositoryTests
 {
     private readonly GenericRepository<User> _genericRepository;
-
+    private const string TestDatabaseName = "SneakerCollectionTestDB";
+    private const string SqlServerConnectionString = "Server=localhost,1433;User Id=sa;Password=YourStrongPassw0rd!;TrustServerCertificate=true";
+    private const string SqlFullConnectionString = $"{SqlServerConnectionString};Database={TestDatabaseName}";
     public GenericRepositoryTests()
     {
-        _genericRepository = new GenericRepository<User>("SqlConnectionString");
+        var dbCreator = new DatabaseCreator(SqlServerConnectionString);
+        dbCreator.CreateDatabaseAndTables(TestDatabaseName);
+        _genericRepository = new GenericRepository<User>(SqlFullConnectionString);
     }
 
     [Fact]
     public async Task GetByIdAsync_UserExists()
     {
         // Arrange
-        var user = CustomFaker.User;
+        var user = CustomFaker.Users.Generate();
+        await _genericRepository.AddAsync(user);
 
         // Act
-        var result = await _genericRepository.GetByIdAsync(user.Id);
+        var userFound = await _genericRepository.GetByIdAsync(user.Id);
 
         // Assert
-        // TODO: Future 
+        Assert.NotNull(userFound);
+        Assert.Equivalent(user, userFound);
+
+        // CleanUp
+        await _genericRepository.DeleteAsync(user.Id);
     }
 
     [Fact]
     public async Task GetByIdAsync_UserDoesNotExists()
     {
-        // Arrange
-        // SetUp done in TestFixture 
-
-        // Act
-        var result = await _genericRepository.GetByIdAsync(int.MinValue);
+        // Arrange & Act
+        var userFound = await _genericRepository.GetByIdAsync(int.MinValue);
 
         // Assert
-        // TODO: Future 
+        Assert.Null(userFound);
     }
 
     [Fact]
     public async Task AddAsync_EntitySaved()
     {
         // Arrange
-        var user = CustomFaker.User;
+        var user = CustomFaker.Users.Generate();
 
-        // Act & Assert
-        await _genericRepository.AddAsync(user);
+        // Act
+        var userAdded = await _genericRepository.AddAsync(user);
 
+        // Assert
+        Assert.NotNull(userAdded);
+        Assert.Equal(user.Email, userAdded.Email);
+        Assert.Equal(user.Password, userAdded.Password);
+
+        // CleanUp
+        await _genericRepository.DeleteAsync(userAdded.Id);
     }
 
     [Fact]
     public async Task DeleteAsync_EntityIsDeleted()
     {
         // Arrange
-        var user = CustomFaker.User;
+        var user = CustomFaker.Users.Generate();
+        var userAdded = await _genericRepository.AddAsync(user);
 
         // Act
-        await _genericRepository.DeleteAsync(user.Id);
-        var result = await _genericRepository.GetByIdAsync(user.Id);
+        await _genericRepository.DeleteAsync(userAdded!.Id);
+        var userDeleted = await _genericRepository.GetByIdAsync(userAdded.Id!);
 
         // Assert
-        // TODO: Future 
+        Assert.NotNull(userAdded);
+        Assert.Null(userDeleted);
     }
 
     [Fact]
     public async Task UpdateAsync_EntityIsUpdated()
     {
         // Arrange
-        var user = CustomFaker.User;
-        var newEmail = "modified@email.com";
-        var newPassword = "ModifiedPassword";
+        var user = CustomFaker.Users.Generate();
+        var previousEmail = user.Email;
+        var previousPassword = user.Password;
+        var userAdded = await _genericRepository.AddAsync(user);
+        var email = $"{user.Email}modified";
+        var password = $"{user.Password}modified";
+        user.Email = email;
+        user.Password = password;
 
         // Act
-        user.Email = newEmail;
-        user.Password = newPassword;
-
-        await _genericRepository.UpdateAsync(user);
-        var result = await _genericRepository.GetByIdAsync(user.Id);
+        await _genericRepository.UpdateAsync(userAdded!);
+        var userUpdated = await _genericRepository.GetByIdAsync(userAdded!.Id);
 
         // Assert
-        // TODO: Future
+        Assert.NotEqual(userUpdated?.Email, previousEmail);
+        Assert.NotEqual(userUpdated?.Email, previousPassword);
+        Assert.Equal(userUpdated?.Email, email);
+        Assert.Equal(userUpdated?.Password, password);
+
+        // CleanUp
+        await _genericRepository.DeleteAsync(userAdded.Id);
     }
 }

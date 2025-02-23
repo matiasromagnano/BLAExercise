@@ -1,4 +1,4 @@
-﻿namespace BLAExercise.Core.Models;
+﻿namespace BLAExercise.API.Models;
 
 public class ApiResponse<T> where T : class
 {

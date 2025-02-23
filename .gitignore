@@ -14,3 +14,7 @@
 /BLAExercise.API/bin/Debug/net9.0
 /BLAExercise.Core/bin/Debug/net9.0
 /BLAExercise.Data/bin/Debug/net9.0
+/BLAExercise.API/bin/Release/net9.0
+/BLAExercise.Core/bin/Release/net9.0
+/BLAExercise.Data/bin/Release/net9.0
+/BLAExercise.Tests/bin/Release/net9.0

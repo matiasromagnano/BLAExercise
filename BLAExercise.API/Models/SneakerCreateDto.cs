@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BLAExercise.Core.Models;
+namespace BLAExercise.API.Models;
 
 public class SneakerCreateDto : BaseUpsertDto
 {
