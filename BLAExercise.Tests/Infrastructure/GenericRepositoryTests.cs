@@ -3,7 +3,7 @@ using BLAExercise.Infrastructure.Database;
 using BLAExercise.Infrastructure.Repositories;
 using BLAExercise.Tests.Helpers;
 
-namespace BLAExercise.Tests.Data;
+namespace BLAExercise.Tests.Infrastructure;
 
 /// <summary>
 /// Integration tests

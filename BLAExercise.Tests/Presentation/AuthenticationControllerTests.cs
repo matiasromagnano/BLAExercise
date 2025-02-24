@@ -14,13 +14,13 @@ namespace SneakerCollection.Tests.API
 {
     public class AuthenticationControllerTests
     {
-        private readonly Mock<IAuthenticationService> _authenticationService;
+        private readonly Mock<IAuthenticationService> _authenticationServiceMock;
         private readonly AuthenticationController _controller;
 
         public AuthenticationControllerTests()
         {
-            _authenticationService = new Mock<IAuthenticationService>();
-            _controller = new AuthenticationController(_authenticationService.Object);
+            _authenticationServiceMock = new Mock<IAuthenticationService>();
+            _controller = new AuthenticationController(_authenticationServiceMock.Object);
         }
 
         [Fact]
@@ -35,15 +35,15 @@ namespace SneakerCollection.Tests.API
                 Password = user.Password
             };
 
-            _authenticationService.Setup(s => s.AuthenticateUser(It.IsAny<UserLoginDto>())).ReturnsAsync(true);
-            _authenticationService.Setup(s => s.GenerateToken(It.IsAny<UserLoginDto>())).ReturnsAsync(jsonWebToken);
+            _authenticationServiceMock.Setup(s => s.AuthenticateUser(It.IsAny<UserLoginDto>())).ReturnsAsync(true);
+            _authenticationServiceMock.Setup(s => s.GenerateToken(It.IsAny<UserLoginDto>())).ReturnsAsync(jsonWebToken);
 
             // Act
             var result = await _controller.GetAuthToken(userDto);
 
             // Assert
-            _authenticationService.Verify(s => s.AuthenticateUser(It.IsAny<UserLoginDto>()), Times.Once());
-            _authenticationService.Verify(s => s.GenerateToken(It.IsAny<UserLoginDto>()), Times.Once());
+            _authenticationServiceMock.Verify(s => s.AuthenticateUser(It.IsAny<UserLoginDto>()), Times.Once());
+            _authenticationServiceMock.Verify(s => s.GenerateToken(It.IsAny<UserLoginDto>()), Times.Once());
             var okObjectResult = result as OkObjectResult;
             Assert.NotNull(okObjectResult);
             Assert.Equal(okObjectResult.StatusCode, StatusCodes.Status200OK);
@@ -60,14 +60,14 @@ namespace SneakerCollection.Tests.API
                 Password = user.Password
             };
 
-            _authenticationService.Setup(s => s.AuthenticateUser(It.IsAny<UserLoginDto>())).ReturnsAsync(false);
+            _authenticationServiceMock.Setup(s => s.AuthenticateUser(It.IsAny<UserLoginDto>())).ReturnsAsync(false);
 
             // Act
             var result = await _controller.GetAuthToken(userDto);
 
             // Assert
-            _authenticationService.Verify(s => s.AuthenticateUser(It.IsAny<UserLoginDto>()), Times.Once());
-            _authenticationService.Verify(s => s.GenerateToken(It.IsAny<UserLoginDto>()), Times.Never());
+            _authenticationServiceMock.Verify(s => s.AuthenticateUser(It.IsAny<UserLoginDto>()), Times.Once());
+            _authenticationServiceMock.Verify(s => s.GenerateToken(It.IsAny<UserLoginDto>()), Times.Never());
             var unauthorizedResult = result as UnauthorizedResult;
             Assert.NotNull(unauthorizedResult);
             Assert.Equal(unauthorizedResult?.StatusCode, StatusCodes.Status401Unauthorized);

@@ -10,25 +10,34 @@ namespace BLAExercise.Application.Services;
 public class SneakerService : ISneakerService
 {
     private readonly ISneakerRepository _sneakerRepository;
+    private readonly IUserService _userService;
     private readonly IMapper _mapper;
 
-    public SneakerService(ISneakerRepository sneakerRepository, IMapper mapper)
+    public SneakerService(ISneakerRepository sneakerRepository, IUserService userService, IMapper mapper)
     {
         _sneakerRepository = sneakerRepository;
+        _userService = userService;
         _mapper = mapper;
     }
 
-    public async Task<SneakerDto?> AddAsync(SneakerCreateDto sneakerDto)
+    public async Task<SneakerDto?> AddAsync(SneakerCreateDto sneakerCreateDto)
     {
         try
         {
-            var sneaker = _mapper.Map<Sneaker>(sneakerDto);
+            // We first check if the user exists
+            var user = await _userService.GetByIdAsync(sneakerCreateDto.UserId);
+
+            if (user is null)
+            {
+                throw new NotFoundException($"No user was found for {nameof(Sneaker.UserId)}: '{sneakerCreateDto.UserId}', please enter a valid {nameof(Sneaker.UserId)} to add a {nameof(Sneaker)}");
+            }
+            var sneaker = _mapper.Map<Sneaker>(sneakerCreateDto);
 
             var sneakerAdded = await _sneakerRepository.AddAsync(sneaker);
 
             return _mapper.Map<SneakerDto>(sneakerAdded);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not NotFoundException)
         {
             throw new CommonException(ex.Message ?? $"Something went wrong when trying to Add {nameof(Sneaker)}");
         }
