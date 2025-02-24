@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace SneakerCollection.Tests.API
+namespace BLAExercise.Tests.Presentation.Unit
 {
     public class AuthenticationControllerTests
     {

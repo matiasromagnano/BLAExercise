@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace BLAExercise.Tests.API;
+namespace BLAExercise.Tests.Presentation.Unit;
 
 public class SneakerControllerTests
 {
