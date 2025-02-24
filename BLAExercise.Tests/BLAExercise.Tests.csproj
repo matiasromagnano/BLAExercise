@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BLAExercise.API\BLAExercise.API.csproj" />
+    <ProjectReference Include="..\BLAExercise.Presentation\BLAExercise.Presentation.csproj" />
   </ItemGroup>
 
   <ItemGroup>
