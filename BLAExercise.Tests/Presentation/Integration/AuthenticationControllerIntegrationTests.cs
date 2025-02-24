@@ -53,7 +53,9 @@ public class AuthenticationControllerIntegrationTests : IClassFixture<WebApplica
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var content = await response.Content.ReadAsStringAsync();
-        Assert.NotNull(content);
+        var result = JsonConvert.DeserializeObject<ApiResponse<object>>(content);
+        Assert.NotNull(result);
+        Assert.NotNull(result.Data);
         _authenticationServiceMock.Verify(s => s.AuthenticateUser(It.IsAny<UserLoginDto>()), Times.Once);
         _authenticationServiceMock.Verify(s => s.GenerateToken(It.IsAny<UserLoginDto>()), Times.Once);
     }

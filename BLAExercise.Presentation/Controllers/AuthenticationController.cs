@@ -1,5 +1,6 @@
 ﻿using BLAExercise.Application.DTOs;
 using BLAExercise.Application.Interfaces;
+using BLAExercise.Presentation.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +8,7 @@ namespace BLAExercise.Presentation.Controllers;
 
 [AllowAnonymous]
 [ApiController]
+[NormalizeApiResponse]
 [Route("api/[controller]")]
 public class AuthenticationController : ControllerBase
 {
