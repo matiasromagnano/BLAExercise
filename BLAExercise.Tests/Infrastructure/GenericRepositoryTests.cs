@@ -8,16 +8,12 @@ namespace BLAExercise.Tests.Infrastructure;
 /// <summary>
 /// Integration tests
 /// </summary>
-public class GenericRepositoryTests
+public class GenericRepositoryTests : BaseRepositoryTests
 {
     private readonly GenericRepository<User> _genericRepository;
-    private const string TestDatabaseName = "SneakerCollectionTestDB";
-    private const string SqlServerConnectionString = "Server=localhost,1433;User Id=sa;Password=YourStrongPassw0rd!;TrustServerCertificate=true";
-    private const string SqlFullConnectionString = $"{SqlServerConnectionString};Database={TestDatabaseName}";
+
     public GenericRepositoryTests()
     {
-        var dbCreator = new DatabaseCreator(SqlServerConnectionString);
-        dbCreator.CreateDatabaseAndTables(TestDatabaseName);
         _genericRepository = new GenericRepository<User>(SqlFullConnectionString);
     }
 
